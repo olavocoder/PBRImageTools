@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mask Map Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>🎨 <span>Mask Map</span> & Tools</h1>
+    <div class="header-info">Creative Image Processing Suite</div>
+</header>
+
+<!-- Tab Navigation -->
+<nav class="tabs-nav">
+    <button class="tab-button active" data-tab="maskmap">🎨 Mask Map Generator</button>
+    <button class="tab-button" data-tab="pbr">🔹 PBR Generator</button>
+    <button class="tab-button" data-tab="watermark">💧 Watermark Removal</button>
+</nav>
+
+<div class="container">
+    <!-- TAB 1: Mask Map Generator -->
+    <div class="tab-content active" id="tab-maskmap">
+
+    <!-- Channel mapping info -->
+    <div class="channel-info-bar">
+        <span class="label">Channel Mapping:</span>
+        <span class="channel-badge red"><span class="channel-dot red"></span> R — Metallic</span>
+        <span class="channel-badge green"><span class="channel-dot green"></span> G — Ambient Occlusion</span>
+        <span class="channel-badge blue"><span class="channel-dot blue"></span> B — Detail Mask</span>
+        <span class="channel-badge alpha"><span class="channel-dot alpha"></span> A — Smoothness (Roughness⁻¹)</span>
+    </div>
+
+    <!-- Input Cards -->
+    <div class="inputs-grid">
+        <!-- Metallic -->
+        <div class="input-card" data-channel="metallic">
+            <div class="card-header">
+                <h3>Metallic</h3>
+                <span class="channel-tag red">Red</span>
+            </div>
+            <div class="drop-zone" id="drop-metallic">
+                <div class="drop-icon">⬜</div>
+                <div class="drop-text">Drag &amp; drop or <strong>browse</strong><br>PNG, JPG, TGA, EXR</div>
+                <input type="file" accept="image/*" id="file-metallic">
+            </div>
+        </div>
+
+        <!-- Ambient Occlusion -->
+        <div class="input-card" data-channel="ao">
+            <div class="card-header">
+                <h3>Ambient Occlusion</h3>
+                <span class="channel-tag green">Green</span>
+            </div>
+            <div class="drop-zone" id="drop-ao">
+                <div class="drop-icon">⬜</div>
+                <div class="drop-text">Drag &amp; drop or <strong>browse</strong><br>PNG, JPG, TGA, EXR</div>
+                <input type="file" accept="image/*" id="file-ao">
+            </div>
+        </div>
+
+        <!-- Detail Mask -->
+        <div class="input-card" data-channel="detail">
+            <div class="card-header">
+                <h3>Detail Mask</h3>
+                <span class="channel-tag blue">Blue</span>
+            </div>
+            <div class="drop-zone" id="drop-detail">
+                <div class="drop-icon">⬜</div>
+                <div class="drop-text">Drag &amp; drop or <strong>browse</strong><br>PNG, JPG, TGA, EXR</div>
+                <input type="file" accept="image/*" id="file-detail">
+            </div>
+        </div>
+
+        <!-- Roughness -->
+        <div class="input-card" data-channel="roughness">
+            <div class="card-header">
+                <h3>Roughness</h3>
+                <span class="channel-tag alpha">Alpha</span>
+            </div>
+            <div class="drop-zone" id="drop-roughness">
+                <div class="drop-icon">⬜</div>
+                <div class="drop-text">Drag &amp; drop or <strong>browse</strong><br>PNG, JPG, TGA, EXR</div>
+                <input type="file" accept="image/*" id="file-roughness">
+            </div>
+            <div class="card-options">
+                <label>
+                    <input type="checkbox" id="invert-roughness" checked>
+                    Invert (Roughness → Smoothness)
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Output Section -->
+    <div class="output-section">
+        <div class="output-header">
+            <h2>📦 Output Mask Map</h2>
+            <div class="output-controls">
+                <label>Size:</label>
+                <select id="output-size">
+                    <option value="auto">Auto (match input)</option>
+                    <option value="256">256 × 256</option>
+                    <option value="512">512 × 512</option>
+                    <option value="1024">1024 × 1024</option>
+                    <option value="2048">2048 × 2048</option>
+                    <option value="4096">4096 × 4096</option>
+                </select>
+                <label>Format:</label>
+                <select id="output-format">
+                    <option value="png">PNG</option>
+                    <option value="tga">TGA</option>
+                </select>
+                <button class="btn btn-primary" id="btn-generate" disabled>
+                    ⚡ Generate Mask Map
+                </button>
+                <button class="btn btn-secondary" id="btn-download" style="display:none;">
+                    💾 Download
+                </button>
+            </div>
+        </div>
+
+        <div class="output-preview" id="output-preview">
+            <div class="empty-output">
+                <div class="empty-icon">🖼️</div>
+                Load at least one texture to generate the mask map.
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- TAB 2: PBR Generator -->
+    <div class="tab-content" id="tab-pbr">
+        <div class="channel-info-bar">
+            <span class="label">PBR Generation:</span>
+            <span class="channel-badge" style="background: #4a5568; color: #fff;">Generate Physically Based Rendering maps from a diffuse texture</span>
+        </div>
+
+        <div class="pbr-container">
+            <!-- Input Section -->
+            <div class="input-card pbr-input-card">
+                <div class="card-header">
+                    <h3>📸 Upload Diffuse Texture</h3>
+                </div>
+                <div class="drop-zone" id="drop-pbr-diffuse">
+                    <div class="drop-icon">🎨</div>
+                    <div class="drop-text">Drag &amp; drop or <strong>browse</strong><br>PNG, JPG, WebP</div>
+                    <input type="file" accept="image/*" id="file-pbr-diffuse">
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div class="pbr-settings" id="pbr-settings" style="display:none;">
+                <div class="settings-grid">
+                    <div class="setting-group">
+                        <label>Normal Map Strength:</label>
+                        <input type="range" id="pbr-normal-strength" min="0.1" max="2" step="0.1" value="1">
+                        <span id="pbr-normal-strength-value">1.0</span>
+                    </div>
+                    <div class="setting-group">
+                        <label>Roughness Level:</label>
+                        <input type="range" id="pbr-roughness-level" min="0" max="255" step="1" value="128">
+                        <span id="pbr-roughness-level-value">128</span>
+                    </div>
+                    <div class="setting-group">
+                        <label>Metallic Amount:</label>
+                        <input type="range" id="pbr-metallic-amount" min="0" max="255" step="1" value="0">
+                        <span id="pbr-metallic-amount-value">0</span>
+                    </div>
+                    <div class="setting-group">
+                        <label>AO Intensity:</label>
+                        <input type="range" id="pbr-ao-intensity" min="0" max="1" step="0.05" value="0.5">
+                        <span id="pbr-ao-intensity-value">0.5</span>
+                    </div>
+                    <div class="setting-group">
+                        <label>Output Format:</label>
+                        <select id="pbr-output-format">
+                            <option value="separated">Separated Maps (ZIP)</option>
+                            <option value="png">PNG Individual</option>
+                        </select>
+                    </div>
+                    <div class="setting-group">
+                        <label>Output Size:</label>
+                        <select id="pbr-output-size">
+                            <option value="auto">Auto (match input)</option>
+                            <option value="512">512 × 512</option>
+                            <option value="1024">1024 × 1024</option>
+                            <option value="2048">2048 × 2048</option>
+                            <option value="4096">4096 × 4096</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pbr-controls">
+                    <button class="btn btn-primary" id="btn-pbr-generate">⚡ Generate PBR Maps</button>
+                    <button class="btn btn-secondary" id="btn-pbr-reset">🔄 Reset</button>
+                </div>
+            </div>
+
+            <!-- Preview & Results -->
+            <div class="pbr-results" id="pbr-results" style="display:none;">
+                <h2>📦 Generated PBR Maps</h2>
+                <div class="pbr-preview-grid" id="pbr-preview-grid">
+                    <!-- Generated previews will be inserted here -->
+                </div>
+                <div class="pbr-download-section">
+                    <button class="btn btn-primary" id="btn-pbr-download">💾 Download All Maps</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Watermark Removal -->
+    <div class="tab-content" id="tab-watermark">
+        <div class="watermark-info-bar">
+            <span class="label">Watermark Removal:</span>
+            <span class="info-text">Remove unwanted watermarks, logos, or text from images using intelligent inpainting</span>
+        </div>
+
+        <div class="watermark-container">
+            <!-- Image Input -->
+            <div class="watermark-card">
+                <div class="card-header">
+                    <h3>📸 Upload Image</h3>
+                </div>
+                <div class="drop-zone" id="drop-watermark-image">
+                    <div class="drop-icon">📷</div>
+                    <div class="drop-text">Drag &amp; drop or <strong>browse</strong><br>PNG, JPG, WebP</div>
+                    <input type="file" accept="image/*" id="file-watermark-image">
+                </div>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="watermark-preview-section" id="watermark-preview-section" style="display:none;">
+                <div class="preview-grid">
+                    <div class="preview-panel">
+                        <h4>Original Image</h4>
+                        <div class="preview-canvas-wrap">
+                            <canvas id="canvas-watermark-original"></canvas>
+                        </div>
+                    </div>
+                    <div class="preview-panel">
+                        <h4>Selection Area</h4>
+                        <div class="preview-canvas-wrap drawing-canvas">
+                            <canvas id="canvas-watermark-mask"></canvas>
+                            <div class="canvas-hint">Draw to mark area to remove</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="watermark-controls">
+                    <div class="control-group">
+                        <label>Brush Size:</label>
+                        <input type="range" id="brush-size" min="5" max="100" value="20">
+                        <span id="brush-size-display">20px</span>
+                    </div>
+                    <div class="control-group">
+                        <label>Algorithm:</label>
+                        <select id="algorithm-type">
+                            <option value="inpaint">Content-Aware Inpainting</option>
+                            <option value="clone">Clone Tool</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="btn-remove-watermark" disabled>
+                        ✨ Remove Watermark
+                    </button>
+                    <button class="btn btn-secondary" id="btn-reset-watermark">
+                        🔄 Reset
+                    </button>
+                </div>
+
+                <!-- Results -->
+                <div class="watermark-result" id="watermark-result" style="display:none;">
+                    <h3>Result</h3>
+                    <div class="result-preview-wrap">
+                        <canvas id="canvas-watermark-result"></canvas>
+                    </div>
+                    <button class="btn btn-primary" id="btn-download-watermark" style="margin-top: 16px;">
+                        💾 Download Result
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<div class="toast" id="toast">Mask Map generated successfully!</div>
+
+<!-- Hidden canvases for processing -->
+<canvas id="work-canvas" style="display:none;"></canvas>
+
+<script src="script.js"></script>
+<script src="tabs.js"></script>
+<script src="pbr.js"></script>
+<script src="watermark.js"></script>
+</body>
+</html>
