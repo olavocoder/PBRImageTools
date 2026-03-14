@@ -1,104 +1,139 @@
 # 🎨 PBR Image Tools
 
-Uma aplicação web moderna para processamento criativo de imagens, oferecendo ferramentas essenciais para criadores de conteúdo 3D e designers.
+A modern web application for creative image processing, offering essential tools for 3D content creators and designers.
 
-## 📋 Descrição
+## 📋 Description
 
-**Mask Map Generator** é uma suite de ferramentas para processamento de imagens com foco especial em texturas PBR (Physically Based Rendering). A aplicação é totalmente gratuita e funciona 100% no navegador, sem necessidade de upload de arquivos para servidores externos.
+**Mask Map Generator** is a suite of tools for image processing with a special focus on PBR (Physically Based Rendering) textures. The application is completely free and runs 100% in the browser, with no need to upload files to external servers.
 
-## 🎯 Funcionalidades
+## 🎯 Features
 
 ### 1. 🎨 Mask Map Generator
-Combina múltiplos canais de imagem em um único mapa de máscaras PBR:
+Combines multiple image channels into a single PBR mask map:
 
-- **Canal R (Vermelho)**: Metallic
-- **Canal G (Verde)**: Ambient Occlusion (AO)
-- **Canal B (Azul)**: Detail Mask
-- **Canal A (Alfa)**: Smoothness (Roughness invertido)
+- **Channel R (Red)**: Metallic
+- **Channel G (Green)**: Ambient Occlusion (AO)
+- **Channel B (Blue)**: Detail Mask
+- **Channel A (Alpha)**: Smoothness (Inverted Roughness)
 
-Suporta múltiplos formatos: PNG, JPG, TGA, EXR
+Supports multiple formats: PNG, JPG, TGA, EXR
 
 ### 2. 🔹 PBR Generator
-Alterna entre canais para criar e visualizar diferentes mapas PBR
+Automatically generates professional PBR maps from a Diffuse texture:
+
+- **Normal Map**: Calculated via Sobel Filter with intensity control
+- **Roughness Map**: Derived from luminance variation
+- **Metallic Map**: Extracted from color saturation
+- **Ambient Occlusion (AO)**: Based on inverted luminance
+- **Mask Map (RGBA)**: Combination of all channels in a single file
+  - R: Metallic
+  - G: Ambient Occlusion
+  - B: Detail Mask
+  - A: Roughness
+
+Includes adjustable controls for each parameter and real-time visualization
 
 ### 3. 💧 Watermark Removal
-Ferramentas para remover marcas d'água de imagens
+Tools for removing watermarks from images
 
-## 🚀 Como Usar
+## 🚀 How to Use
 
 ### Mask Map Generator
 
-1. **Importar Imagens**:
-   - Arraste e solte suas imagens nos campos de entrada, ou
-   - Clique para abrir o navegador de arquivos
+1. **Import Images**:
+   - Drag and drop your images into the input fields, or
+   - Click to open the file browser
 
-2. **Configurar Canais**:
-   - Cada campo representa um canal:
-     - Metallic → Será escrito no canal vermelho (R)
-     - Ambient Occlusion → Será escrito no canal verde (G)
-     - Detail Mask → Será escrito no canal azul (B)
-     - Roughness → Será escrito no canal alfa (A)
+2. **Configure Channels**:
+   - Each field represents a channel:
+     - Metallic → Will be written to the red channel (R)
+     - Ambient Occlusion → Will be written to the green channel (G)
+     - Detail Mask → Will be written to the blue channel (B)
+     - Roughness → Will be written to the alpha channel (A)
 
-3. **Opções**:
-   - Marque "Invert (Roughness → Smoothness)" para converter roughness em smoothness
+3. **Options**:
+   - Check "Invert (Roughness → Smoothness)" to convert roughness to smoothness
 
-4. **Gerar**:
-   - Clique em "Generate Mask Map" para combinar os canais
+4. **Generate**:
+   - Click "Generate Mask Map" to combine the channels
 
 5. **Download**:
-   - Escolha o formato desejado (PNG, JPG)
-   - Clique em "Download" para salvar o arquivo
+   - Choose your desired format (PNG, JPG)
+   - Click "Download" to save the file
 
-## 📁 Estrutura do Projeto
+### PBR Generator
+
+1. **Import Diffuse Texture**:
+   - Drag and drop your texture or click to browse
+
+2. **Adjust Parameters**:
+   - **Normal Strength**: Controls the intensity of the normal map (0-1)
+   - **Roughness Level**: Sets the base roughness level (0-255)
+   - **Metallic Amount**: Defines how much metallic will be detected (0-255)
+   - **AO Intensity**: Controls the intensity of ambient occlusion (0-1)
+
+3. **Preview**:
+   - Maps are generated in real-time as you adjust the controls
+   - See a preview of each map: Normal, Roughness, Metallic, AO, and Mask Map
+
+4. **Download**:
+   - Click "Download" to save all 5 automatically generated maps:
+     - `normal.png`
+     - `roughness.png`
+     - `metallic.png`
+     - `ambient_occlusion.png`
+     - `mask_map.png` (combined RGBA)
+
+## 📁 Project Structure
 
 ```
 MaskmapApp/
-├── index.html          # Estrutura HTML principal
-├── style.css           # Estilos de interface
-├── script.js           # Lógica principal do Mask Map Generator
-├── pbr.js              # Lógica do PBR Generator
-├── watermark.js        # Lógica do Watermark Removal
-├── tabs.js             # Gerenciador de abas
-└── README.md           # Este arquivo
+├── index.html          # Main HTML structure
+├── style.css           # Interface styles
+├── script.js           # Main logic for Mask Map Generator
+├── pbr.js              # PBR Generator logic
+├── watermark.js        # Watermark Removal logic
+├── tabs.js             # Tab manager
+└── README.md           # This file
 ```
 
-## 🛠️ Tecnologias
+## 🛠️ Technologies
 
-- **HTML5**: Estrutura semântica
-- **CSS3**: Design responsivo e moderno
-- **JavaScript (Vanilla)**: Processamento de imagens no navegador
-- **Canvas API**: Manipulação de imagens
-- **FileReader API**: Leitura de arquivos locais
+- **HTML5**: Semantic structure
+- **CSS3**: Responsive and modern design
+- **JavaScript (Vanilla)**: Image processing in the browser
+- **Canvas API**: Image manipulation
+- **FileReader API**: Local file reading
 
-## ✨ Recursos
+## ✨ Features
 
-- ✅ Processamento 100% local (sem upload para servidor)
-- ✅ Interface intuitiva com drag & drop
-- ✅ Preview em tempo real
-- ✅ Suporta múltiplos formatos de imagem
-- ✅ Responsivo e mobile-friendly
-- ✅ Tema escuro moderno
+- ✅ 100% local processing (no server upload)
+- ✅ Intuitive interface with drag & drop
+- ✅ Real-time preview
+- ✅ Supports multiple image formats
+- ✅ Responsive and mobile-friendly
+- ✅ Modern dark theme
 
-## 💡 Dicas de Uso
+## 💡 Usage Tips
 
-- As imagens podem ter tamanhos diferentes; elas serão dimensionadas para o tamanho da maior
-- O invert de roughness é feito através da fórmula: `smoothness = 1 - roughness`
-- Todos os processamentos ocorrem localmente no seu navegador
+- Images can have different sizes; they will be resized to match the largest one
+- Roughness inversion is done through the formula: `smoothness = 1 - roughness`
+- All processing occurs locally in your browser
 
-## 📝 Notas de Desenvolvimento
+## 📝 Development Notes
 
-- A aplicação usa Canvas API para composição de canais
-- Cada arquivo JS é modular e responsável por uma funcionalidade específica
-- O gerenciador de abas permite fácil extensão com novos processadores
+- The application uses Canvas API for channel composition
+- Each JS file is modular and responsible for a specific functionality
+- The tab manager allows easy extension with new processors
 
-## 🤝 Contribuições
+## 🤝 Contributions
 
-Para sugestões ou melhorias, abra uma issue ou entre em contato com o desenvolvedor.
+For suggestions or improvements, open an issue or contact the developer.
 
-## 📄 Licença
+## 📄 License
 
-Este projeto é fornecido como está, sem garantias explícitas ou implícitas.
+This project is provided as-is, without explicit or implicit warranties.
 
 ---
 
-**Desenvolvido com ❤️ para criadores 3D**
+**Developed with ❤️ for 3D creators**
