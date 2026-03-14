@@ -1,4 +1,4 @@
-# 🎨 Mask Map & Tools
+# 🎨 PBR Image Tools
 
 Uma aplicação web moderna para processamento criativo de imagens, oferecendo ferramentas essenciais para criadores de conteúdo 3D e designers.
 

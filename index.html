@@ -18,6 +18,7 @@
     <button class="tab-button active" data-tab="maskmap">🎨 Mask Map Generator</button>
     <button class="tab-button" data-tab="pbr">🔹 PBR Generator</button>
     <button class="tab-button" data-tab="watermark">💧 Watermark Removal</button>
+    <button class="tab-button" data-tab="editor">✏️ Image Editor</button>
 </nav>
 
 <div class="container">
@@ -286,6 +287,102 @@
         </div>
     </div>
 
+    <!-- TAB 4: Image Editor -->
+    <div class="tab-content" id="tab-editor">
+        <div class="editor-info-bar">
+            <span class="label">Basic Image Editor:</span>
+            <span class="info-text">Adjust brightness, contrast, apply filters, rotate, and crop images</span>
+        </div>
+
+        <div class="editor-container">
+            <!-- Upload Section -->
+            <div class="editor-upload-card">
+                <div class="card-header">
+                    <h3>📸 Load Image</h3>
+                </div>
+                <div class="drop-zone" id="drop-editor-image">
+                    <div class="drop-icon">🖼️</div>
+                    <div class="drop-text">Drag &amp; drop or <strong>browse</strong><br>PNG, JPG, WebP, GIF</div>
+                    <input type="file" accept="image/*" id="file-editor-image">
+                </div>
+            </div>
+
+            <!-- Editor Section -->
+            <div class="editor-workspace" id="editor-workspace" style="display:none;">
+                <!-- Controls Panel -->
+                <div class="editor-controls-panel">
+                    <div class="controls-section">
+                        <h4>Adjustments</h4>
+                        
+                        <div class="control-slider">
+                            <label>Brightness:</label>
+                            <input type="range" id="editor-brightness" min="-100" max="100" value="0">
+                            <span class="value-display">0</span>
+                        </div>
+
+                        <div class="control-slider">
+                            <label>Contrast:</label>
+                            <input type="range" id="editor-contrast" min="-100" max="100" value="0">
+                            <span class="value-display">0</span>
+                        </div>
+
+                        <div class="control-slider">
+                            <label>Saturation:</label>
+                            <input type="range" id="editor-saturation" min="-100" max="100" value="0">
+                            <span class="value-display">0</span>
+                        </div>
+
+                        <div class="control-slider">
+                            <label>Hue:</label>
+                            <input type="range" id="editor-hue" min="-180" max="180" value="0">
+                            <span class="value-display">0</span>
+                        </div>
+
+                        <div class="control-slider">
+                            <label>Blur:</label>
+                            <input type="range" id="editor-blur" min="0" max="20" value="0">
+                            <span class="value-display">0</span>
+                        </div>
+                    </div>
+
+                    <div class="controls-section">
+                        <h4>Transform</h4>
+                        
+                        <div class="button-group">
+                            <button class="btn btn-small" id="editor-rotate-left">↺ Rotate Left</button>
+                            <button class="btn btn-small" id="editor-rotate-right">↻ Rotate Right</button>
+                        </div>
+
+                        <div class="button-group">
+                            <button class="btn btn-small" id="editor-flip-h">⟷ Flip Horizontal</button>
+                            <button class="btn btn-small" id="editor-flip-v">⟱ Flip Vertical</button>
+                        </div>
+                    </div>
+
+                    <div class="controls-section">
+                        <h4>Filters</h4>
+                        
+                        <div class="filter-buttons">
+                            <button class="btn btn-small" id="editor-filter-grayscale">Grayscale</button>
+                            <button class="btn btn-small" id="editor-filter-sepia">Sepia</button>
+                            <button class="btn btn-small" id="editor-filter-invert">Invert</button>
+                        </div>
+                    </div>
+
+                    <div class="controls-section actions">
+                        <button class="btn btn-secondary" id="editor-reset">🔄 Reset</button>
+                        <button class="btn btn-primary" id="editor-download">💾 Download</button>
+                    </div>
+                </div>
+
+                <!-- Canvas Section -->
+                <div class="editor-canvas-section">
+                    <canvas id="editor-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 <div class="toast" id="toast">Mask Map generated successfully!</div>
 
@@ -296,5 +393,6 @@
 <script src="tabs.js"></script>
 <script src="pbr.js"></script>
 <script src="watermark.js"></script>
+<script src="editor.js"></script>
 </body>
 </html>

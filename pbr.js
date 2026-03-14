@@ -6,7 +6,8 @@
         normal: null,
         roughness: null,
         metallic: null,
-        ao: null
+        ao: null,
+        maskMap: null
     };
     let generateTimeout = null;
 
@@ -109,7 +110,7 @@
     function resetUI() {
         diffuseImage = null;
         diffuseFileName = '';
-        generatedMaps = { normal: null, roughness: null, metallic: null, ao: null };
+        generatedMaps = { normal: null, roughness: null, metallic: null, ao: null, maskMap: null };
         
         dropZone.innerHTML = `
             <div class="drop-icon">🎨</div>
@@ -191,6 +192,9 @@
 
         // Generate AO Map
         generatedMaps.ao = generateAOMap(diffusePixels, width, height, aoIntensity);
+
+        // Generate Mask Map (combination of Metallic, AO, Detail, and Roughness)
+        generatedMaps.maskMap = generateMaskMapCombined(generatedMaps.metallic, generatedMaps.ao, generatedMaps.roughness, width, height);
 
         // Show results
         showPBRResults(width, height);
@@ -404,6 +408,54 @@
         return canvas;
     }
 
+    // ---- Generate Mask Map (combined RGBA) ----
+    function generateMaskMapCombined(metallicCanvas, aoCanvas, roughnessCanvas, width, height) {
+        const outCanvas = document.createElement('canvas');
+        outCanvas.width = width;
+        outCanvas.height = height;
+        const outCtx = outCanvas.getContext('2d');
+        const outImageData = outCtx.createImageData(width, height);
+        const outPixels = outImageData.data;
+
+        // Get pixel data from source maps
+        const workCanvas = document.getElementById('work-canvas') || createWorkCanvas();
+        const ctx = workCanvas.getContext('2d', { willReadFrequently: true });
+
+        // Extract Metallic channel (Red from metallic map)
+        workCanvas.width = width;
+        workCanvas.height = height;
+        ctx.clearRect(0, 0, width, height);
+        ctx.drawImage(metallicCanvas, 0, 0);
+        const metallicData = ctx.getImageData(0, 0, width, height).data;
+
+        // Extract AO channel (Green from AO map)
+        ctx.clearRect(0, 0, width, height);
+        ctx.drawImage(aoCanvas, 0, 0);
+        const aoData = ctx.getImageData(0, 0, width, height).data;
+
+        // Extract Roughness channel (Alpha from roughness map)
+        ctx.clearRect(0, 0, width, height);
+        ctx.drawImage(roughnessCanvas, 0, 0);
+        const roughnessData = ctx.getImageData(0, 0, width, height).data;
+
+        // Combine into Mask Map
+        for (let i = 0; i < width * height; i++) {
+            const pi = i * 4;
+
+            // R = Metallic
+            outPixels[pi]     = metallicData[pi];
+            // G = AO
+            outPixels[pi + 1] = aoData[pi];
+            // B = Detail Mask (derived from roughness variation - set to 0 by default)
+            outPixels[pi + 2] = 0;
+            // A = Roughness/Smoothness
+            outPixels[pi + 3] = roughnessData[pi];
+        }
+
+        outCtx.putImageData(outImageData, 0, 0);
+        return outCanvas;
+    }
+
     // ---- Show results ----
     function showPBRResults(width, height) {
         previewGrid.innerHTML = '';
@@ -412,7 +464,8 @@
             { label: 'Normal Map (XYZ)', canvas: generatedMaps.normal },
             { label: 'Roughness Map', canvas: generatedMaps.roughness },
             { label: 'Metallic Map', canvas: generatedMaps.metallic },
-            { label: 'Ambient Occlusion', canvas: generatedMaps.ao }
+            { label: 'Ambient Occlusion', canvas: generatedMaps.ao },
+            { label: 'Mask Map (RGBA)', canvas: generatedMaps.maskMap }
         ];
 
         maps.forEach(map => {
@@ -452,12 +505,14 @@
             downloadCanvas(generatedMaps.roughness, 'roughness.png');
             downloadCanvas(generatedMaps.metallic, 'metallic.png');
             downloadCanvas(generatedMaps.ao, 'ambient_occlusion.png');
+            downloadCanvas(generatedMaps.maskMap, 'mask_map.png');
         } else {
             // For ZIP support, we'll use a simple approach
             downloadCanvas(generatedMaps.normal, 'normal.png');
             downloadCanvas(generatedMaps.roughness, 'roughness.png');
             downloadCanvas(generatedMaps.metallic, 'metallic.png');
             downloadCanvas(generatedMaps.ao, 'ambient_occlusion.png');
+            downloadCanvas(generatedMaps.maskMap, 'mask_map.png');
             showToast('PBR Maps downloaded!');
         }
     }
